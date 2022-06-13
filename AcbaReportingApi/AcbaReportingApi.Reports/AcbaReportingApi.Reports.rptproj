@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <FullPath>Debug</FullPath>
+    <OutputPath>bin\Debug</OutputPath>
+    <ErrorLevel>2</ErrorLevel>
+    <OverwriteDatasets>False</OverwriteDatasets>
+    <OverwriteDataSources>False</OverwriteDataSources>
+    <TargetServerVersion>SSRS2008R2</TargetServerVersion>
+    <Platform>Win32</Platform>
+    <TargetReportFolder>ACBAReports</TargetReportFolder>
+    <TargetDatasetFolder>Datasets</TargetDatasetFolder>
+    <TargetDatasourceFolder>Data Sources</TargetDatasourceFolder>
+    <TargetReportPartFolder>Report Parts</TargetReportPartFolder>
+    <TargetServerURL>https://rs01_t/ReportServer</TargetServerURL>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'DebugLocal' ">
+    <FullPath>DebugLocal</FullPath>
+    <OutputPath>bin\DebugLocal</OutputPath>
+    <ErrorLevel>2</ErrorLevel>
+    <OverwriteDatasets>False</OverwriteDatasets>
+    <OverwriteDataSources>False</OverwriteDataSources>
+    <TargetServerVersion>SSRS2016</TargetServerVersion>
+    <Platform>Win32</Platform>
+    <TargetReportFolder>AcbaReportingApi.Reports</TargetReportFolder>
+    <TargetDatasetFolder>Datasets</TargetDatasetFolder>
+    <TargetDatasourceFolder>Data Sources</TargetDatasourceFolder>
+    <TargetReportPartFolder>Report Parts</TargetReportPartFolder>
+    <TargetServerURL>http://localhost/reportserver</TargetServerURL>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <FullPath>Release</FullPath>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorLevel>2</ErrorLevel>
+    <OverwriteDatasets>False</OverwriteDatasets>
+    <OverwriteDataSources>False</OverwriteDataSources>
+    <TargetServerVersion>SSRS2016</TargetServerVersion>
+    <Platform>Win32</Platform>
+    <TargetReportFolder>ACBAReports</TargetReportFolder>
+    <TargetDatasetFolder>Datasets</TargetDatasetFolder>
+    <TargetDatasourceFolder>Data Sources</TargetDatasourceFolder>
+    <TargetReportPartFolder>Report Parts</TargetReportPartFolder>
+    <TargetServerURL>https://rs01/Report</TargetServerURL>
+  </PropertyGroup>
+  <PropertyGroup>
+    <State>$base64$PFNvdXJjZUNvbnRyb2xJbmZvIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOmRkbDI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vYW5hbHlzaXNzZXJ2aWNlcy8yMDAzL2VuZ2luZS8yIiB4bWxuczpkZGwyXzI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vYW5hbHlzaXNzZXJ2aWNlcy8yMDAzL2VuZ2luZS8yLzIiIHhtbG5zOmRkbDEwMF8xMDA9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vYW5hbHlzaXNzZXJ2aWNlcy8yMDA4L2VuZ2luZS8xMDAvMTAwIiB4bWxuczpkZGwyMDA9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vYW5hbHlzaXNzZXJ2aWNlcy8yMDEwL2VuZ2luZS8yMDAiIHhtbG5zOmRkbDIwMF8yMDA9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vYW5hbHlzaXNzZXJ2aWNlcy8yMDEwL2VuZ2luZS8yMDAvMjAwIiB4bWxuczpkZGwzMDA9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vYW5hbHlzaXNzZXJ2aWNlcy8yMDExL2VuZ2luZS8zMDAiIHhtbG5zOmRkbDMwMF8zMDA9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vYW5hbHlzaXNzZXJ2aWNlcy8yMDExL2VuZ2luZS8zMDAvMzAwIiB4bWxuczpkZGw0MDA9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vYW5hbHlzaXNzZXJ2aWNlcy8yMDEyL2VuZ2luZS80MDAiIHhtbG5zOmRkbDQwMF80MDA9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vYW5hbHlzaXNzZXJ2aWNlcy8yMDEyL2VuZ2luZS80MDAvNDAwIiB4bWxuczpkZGw1MDA9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vYW5hbHlzaXNzZXJ2aWNlcy8yMDEzL2VuZ2luZS81MDAiIHhtbG5zOmRkbDUwMF81MDA9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vYW5hbHlzaXNzZXJ2aWNlcy8yMDEzL2VuZ2luZS81MDAvNTAwIiB4bWxuczpkd2Q9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vRGF0YVdhcmVob3VzZS9EZXNpZ25lci8xLjAiPg0KICA8RW5hYmxlZD5mYWxzZTwvRW5hYmxlZD4NCiAgPFByb2plY3ROYW1lPjwvUHJvamVjdE5hbWU+DQogIDxBdXhQYXRoPjwvQXV4UGF0aD4NCiAgPExvY2FsUGF0aD48L0xvY2FsUGF0aD4NCiAgPFByb3ZpZGVyPjwvUHJvdmlkZXI+DQo8L1NvdXJjZUNvbnRyb2xJbmZvPg==</State>
+    <DataSources>@(DataSource)</DataSources>
+    <DataSets>@(DataSet)</DataSets>
+    <Reports>@(Report)</Reports>
+  </PropertyGroup>
+  <ItemGroup>
+    <DataSource Include="AccOperBase.rds" />
+    <DataSource Include="AccOperbaseDataSource.rds" />
+    <DataSource Include="AccOperBaseDataSourceRO.rds" />
+    <DataSource Include="CashTerminalBaseDataSource.rds" />
+    <DataSource Include="HBBaseDataSource.rds" />
+    <DataSource Include="HBLoginsDataSource.rds" />
+    <DataSource Include="LeasingAccOper.rds" />
+    <DataSource Include="LoanRequestDataSource.rds" />
+    <DataSource Include="SMSManagement.rds" />
+    <DataSource Include="StatementBaseDataSource.rds" />
+  </ItemGroup>
+  <ItemGroup>
+    <Report Include="3DSecureDimum.rdl" />
+    <Report Include="ACBADigitalCardOrderReceiptConfirmation.rdl" />
+    <Report Include="Account_Statement_Report_For_Cash_Book.rdl" />
+    <Report Include="ActiveTokensByFilialsReport.rdl" />
+    <Report Include="AdditionalCardApplication.rdl" />
+    <Report Include="AmexMROffers.rdl" />
+    <Report Include="Aparik_Report_Current.rdl" />
+    <Report Include="Aparik_Report_Given.rdl" />
+    <Report Include="Aparik_Report_Submitted.rdl" />
+    <Report Include="ArcaCardsTransactions.rdl" />
+    <Report Include="Armentel_Payment_Report_CASH.rdl" />
+    <Report Include="Armentel_Payment_Report_Pl_Por.rdl" />
+    <Report Include="ArmWater_Payment_Report_CASH.rdl" />
+    <Report Include="ArmWater_Payment_Report_Pl_Por.rdl" />
+    <Report Include="BankMail.rdl" />
+    <Report Include="BankMailTransfers.rdl" />
+    <Report Include="BondCustomerCard.rdl" />
+    <Report Include="BondCustomerCardLegal.rdl" />
+    <Report Include="BusinessCardApplicationProlongation.rdl" />
+    <Report Include="CardAccountClosingApplication.rdl" />
+    <Report Include="CardAccountDetailChange.rdl" />
+    <Report Include="CardAccountDetails.rdl" />
+    <Report Include="CardBlockApplication.rdl" />
+    <Report Include="CardClosingApplication.rdl" />
+    <Report Include="CardlessCashoutCancellationOrder.rdl" />
+    <Report Include="CardlessCashoutReport.rdl" />
+    <Report Include="CardRenewalApplication.rdl" />
+    <Report Include="CardReplacementApplication.rdl" />
+    <Report Include="CardStatement.rdl" />
+    <Report Include="CardStatementSession.rdl" />
+    <Report Include="CardStatement_ENG.rdl" />
+    <Report Include="CardsToBeShippedReport.rdl" />
+    <Report Include="CardTarifReport.rdl" />
+    <Report Include="CashBookReport.rdl" />
+    <Report Include="CashBookReportTotal.rdl" />
+    <Report Include="CashDailyFlow.rdl" />
+    <Report Include="CashJournalDailyReport.rdl" />
+    <Report Include="CashTerminalOperationsReport.rdl" />
+    <Report Include="CashTotalQuantityReport.rdl" />
+    <Report Include="CashTransactionExceeded.rdl" />
+    <Report Include="Cash_Big_Amount.rdl" />
+    <Report Include="Cash_In.rdl" />
+    <Report Include="Cash_In_By_Reestr.rdl" />
+    <Report Include="Cash_In_By_Reestr_Amounts.rdl" />
+    <Report Include="Cash_in_by_Reestr_Note.rdl" />
+    <Report Include="Cash_Out.rdl" />
+    <Report Include="ClosedCreditLine_Orders_Report.rdl" />
+    <Report Include="ClosedDepositsReport.rdl" />
+    <Report Include="Closed_Current_Account_Journal_Report.rdl" />
+    <Report Include="ClosePaymentInstructionByPeriodFromAppID.rdl" />
+    <Report Include="Consume_Loan_Settlement_Schedule.rdl" />
+    <Report Include="Consume_Resume.rdl" />
+    <Report Include="Consume_Resume_Scoring.rdl" />
+    <Report Include="Convertation_Cash.rdl" />
+    <Report Include="Convertation_Cash_NonCash.rdl" />
+    <Report Include="Convertation_NonCash.rdl" />
+    <Report Include="Convertation_NonCash_Cash.rdl" />
+    <Report Include="CreditCommitmentForgiveness.rdl" />
+    <Report Include="CreditlineClosingApplication.rdl" />
+    <Report Include="CreditLine_Orders_Report.rdl" />
+    <Report Include="CreditLine_Repayment_Schedule.rdl" />
+    <Report Include="Cross_Convertation_Cash.rdl" />
+    <Report Include="Cross_Convertation_Cash_NonCash.rdl" />
+    <Report Include="Cross_Convertation_NonCash.rdl" />
+    <Report Include="Cross_Convertation_NonCash_Cash.rdl" />
+    <Report Include="CurrentAccountStatement.rdl" />
+    <Report Include="CurrentAccountStatementNew.rdl" />
+    <Report Include="Current_Account_Journal_Report.rdl" />
+    <Report Include="DAHKfreezedAmountsReport.rdl" />
+    <Report Include="DailyBalanceReport.rdl" />
+    <Report Include="DepositAccountStatementNew.rdl" />
+    <Report Include="DepositRepaymentsGrafik.rdl" />
+    <Report Include="DepositRepaymentsGrafik_eng.rdl" />
+    <Report Include="Deposits_Journal_Report.rdl" />
+    <Report Include="ElentricityPaymentReportCash.rdl" />
+    <Report Include="ElentricityPaymentReportPlPor.rdl" />
+    <Report Include="ENA_Payment_Report_Cash.rdl" />
+    <Report Include="ENA_Payment_Report_Pl_Por.rdl" />
+    <Report Include="EO_Get_Client_Responses_Report.rdl" />
+    <Report Include="ExperienceAndKnowledgeQuestionnaire.rdl" />
+    <Report Include="FondAccountsList.rdl" />
+    <Report Include="GasProm_Payment_Report_Cash.rdl" />
+    <Report Include="GasProm_Payment_Report_Pl_Por.rdl" />
+    <Report Include="GetProductPercentsAccumulationDetails.rdl" />
+    <Report Include="GivenCardsReport.rdl" />
+    <Report Include="HBApplicationsAndOrdersReport.rdl" />
+    <Report Include="HBDocumentsReport.rdl" />
+    <Report Include="HBUsersActivity.rdl" />
+    <Report Include="Hypotec_Statment.rdl" />
+    <Report Include="IBankingContractsCount.rdl" />
+    <Report Include="IBankingUsersCount.rdl" />
+    <Report Include="InternationalCardTransactionsReport.rdl" />
+    <Report Include="InternationalTransferApplicationForm.rdl" />
+    <Report Include="Intra_Transactions_By_Period.rdl" />
+    <Report Include="Introduced_O_B_P_Counts.rdl" />
+    <Report Include="KYC_Individual_MVC.rdl" />
+    <Report Include="KYC_Legal_MVC.rdl" />
+    <Report Include="LeasingClassificationBasisChangedCustomers.rdl" />
+    <Report Include="LeasingCustomersWithoutEmail.rdl" />
+    <Report Include="LeasingCustomersWithoutEmailForStatement.rdl" />
+    <Report Include="LeasingCustomerWithOpenClassificationBasis.rdl" />
+    <Report Include="LeasingScheduleNonSubsid.rdl" />
+    <Report Include="LeasingScheduleSubsid.rdl" />
+    <Report Include="LeasingStatementSession.rdl" />
+    <Report Include="LinkedCard.rdl" />
+    <Report Include="LoanStatementSession.rdl" />
+    <Report Include="Loan_Repayment_Schedule.rdl" />
+    <Report Include="Loan_Statment.rdl" />
+    <Report Include="Loan_Statment_NEW.rdl" />
+    <Report Include="Memorial_by_Period.rdl" />
+    <Report Include="MortgageResume.rdl" />
+    <Report Include="NewPosTerminalApplicationReport.rdl" />
+    <Report Include="NewVPosApplicationReport.rdl" />
+    <Report Include="NotMaturedLoans.rdl" />
+    <Report Include="OnlineBankingOrdersReport.rdl" />
+    <Report Include="Orange_Payment_Report_CASH.rdl" />
+    <Report Include="Orange_Payment_Report_Pl_Por.rdl" />
+    <Report Include="O_B_P_Counts.rdl" />
+    <Report Include="O_B_P_Expired.rdl" />
+    <Report Include="O_B_P_NotExecuted.rdl" />
+    <Report Include="PaidTransfers.rdl" />
+    <Report Include="PaymentInstructionByPeriodFromAppId.rdl" />
+    <Report Include="PaymentInstructionByPeriodSwiftExtractFromAppID.rdl" />
+    <Report Include="PaymentOrderWithStateDutiesMark.rdl" />
+    <Report Include="Payment_order.rdl" />
+    <Report Include="Pension_Application.rdl" />
+    <Report Include="PlasticCardOrdersReport.rdl" />
+    <Report Include="POS_Statement_Report.rdl" />
+    <Report Include="Prix_Rasx_Operations.rdl" />
+    <Report Include="ProlongCreditLine_Orders_Report.rdl" />
+    <Report Include="ProvisionsReport.rdl" />
+    <Report Include="RemoteServicesMonitoringReport.rdl" />
+    <Report Include="RenewedCardApplication.rdl" />
+    <Report Include="RenewedOtherTypeCardApplication.rdl" />
+    <Report Include="Reopeneded_Current_Account_Journal_Report.rdl" />
+    <Report Include="RepLeasingCastomerConnection.rdl" />
+    <Report Include="RepLeasingOneMoreClassifiedCustomers.rdl" />
+    <Report Include="ReportOfLoansReturningToOutBalance.rdl" />
+    <Report Include="ReportOfLoansToOutBalance.rdl" />
+    <Report Include="Rep_AccountTransactions.rdl" />
+    <Report Include="Rep_Arca_Points_List.rdl" />
+    <Report Include="Rep_Bankrupt_Customers.rdl" />
+    <Report Include="REP_CommitteeAgriLoanLine.rdl" />
+    <Report Include="REP_CommitteeBussines.rdl" />
+    <Report Include="REP_CommitteeExportInportLine.rdl" />
+    <Report Include="REP_CommitteeExpressBussines.rdl" />
+    <Report Include="REP_CommitteeFactoring.rdl" />
+    <Report Include="REP_CommitteeGuarantee.rdl" />
+    <Report Include="REP_CommitteeMortgage.rdl" />
+    <Report Include="REP_CommitteeOverdraft.rdl" />
+    <Report Include="REP_CommitteeSparox.rdl" />
+    <Report Include="REP_CommitteeStandartAgriLoan.rdl" />
+    <Report Include="REP_Committee_Loan_Line_Ashx.rdl" />
+    <Report Include="REP_Committee_sparox-ashx.rdl" />
+    <Report Include="Rep_ListOfCustomerDeposits.rdl" />
+    <Report Include="Rep_Pension_Application.rdl" />
+    <Report Include="Rep_Print_Bankrupt.rdl" />
+    <Report Include="Rep_SafekeepingItem.rdl" />
+    <Report Include="Rep_transfer_received_BankMail.rdl" />
+    <Report Include="Rep_transfer_received_BankMail_all_field.rdl" />
+    <Report Include="SalaryProgramReport.rdl" />
+    <Report Include="SaledEquipmentsReport.rdl" />
+    <Report Include="SalPaymentReport.rdl" />
+    <Report Include="SentSMSMessages.rdl" />
+    <Report Include="SMSDimum.rdl" />
+    <Report Include="SMS_notification_REPORT_for_cards.rdl" />
+    <Report Include="SPChangeHistoryReport.rdl" />
+    <Report Include="SSTerminal_Incomplete_Operations_NATK.rdl" />
+    <Report Include="SSTerminal_Operations_ACBA.rdl" />
+    <Report Include="SSTerminal_Operations_NATK.rdl" />
+    <Report Include="SSTerminal_Operations_Not_Exist_In_ACBA.rdl" />
+    <Report Include="SSTerminal_operations_to_resend.rdl" />
+    <Report Include="StakRemittancePayoutOrder.rdl" />
+    <Report Include="STAKSendMoneyApplicationForm.rdl" />
+    <Report Include="StatementCover.rdl" />
+    <Report Include="StatementCover_eng.rdl" />
+    <Report Include="Stocks_Daily_Report.rdl" />
+    <Report Include="StoredCreditProductReport.rdl" />
+    <Report Include="StoredCreditProductsByCustReport.rdl" />
+    <Report Include="SubBankMail.rdl" />
+    <Report Include="SubExperienceAndKnowledgeQuestionnaire.rdl" />
+    <Report Include="SubPaymentOrderWithStateDutiesMark.rdl" />
+    <Report Include="Subreport_Cash_in_by_Reestr.rdl" />
+    <Report Include="Sub_CashDailyFlow.rdl" />
+    <Report Include="Sub_CashJournalDailyReport.rdl" />
+    <Report Include="Sub_CashTotalQuantityReport.rdl" />
+    <Report Include="Sub_Cash_In.rdl" />
+    <Report Include="sub_Memo.rdl" />
+    <Report Include="Sub_Report_Payment_order.rdl" />
+    <Report Include="SwiftTransferMessage.rdl" />
+    <Report Include="TerminalReport.rdl" />
+    <Report Include="ThirdPartyOrganizationReport.rdl" />
+    <Report Include="ThirdPartyOrganizationReportInternal.rdl" />
+    <Report Include="Tokenization_Card_Report.rdl" />
+    <Report Include="TransactionChargebackApplication.rdl" />
+    <Report Include="Transfers_By_Call_Report.rdl" />
+    <Report Include="Transfer_Without_Account_Report.rdl" />
+    <Report Include="Trash_Payment_Report_Cash.rdl" />
+    <Report Include="Trash_Payment_Report_Pl_Por.rdl" />
+    <Report Include="UCOM_Payment_Report_CASH.rdl" />
+    <Report Include="UCOM_Payment_Report_Pl_Por.rdl" />
+    <Report Include="VeoliaJur_Payment_Report_Cash.rdl" />
+    <Report Include="VeoliaJur_Payment_Report_Pl_Por.rdl" />
+    <Report Include="VisaDirect-MasterMoneySend.rdl" />
+    <Report Include="VisaOverAccRests.rdl" />
+    <Report Include="VivaCell_Payment_Report_CASH.rdl" />
+    <Report Include="VivaCell_Payment_Report_Pl_Por.rdl" />
+    <Report Include="WaterCo_Payment_Report_CASH.rdl" />
+    <Report Include="WaterCo_Payment_Report_REESTR.rdl" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Reporting Services\Microsoft.ReportingServices.MSBuilder.targets" />
+</Project>

@@ -1,0 +1,577 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="AccOperbaseDataSource">
+      <DataSourceReference>AccOperbaseDataSource</DataSourceReference>
+      <rd:SecurityType>None</rd:SecurityType>
+      <rd:DataSourceID>d30ef0c4-6cf1-4570-88e4-1408dd1e3283</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Subreport Name="Subreport4">
+            <ReportName>Sub_Report_Payment_order</ReportName>
+            <Parameters>
+              <Parameter Name="reg_date">
+                <Value>=Parameters!reg_date.Value</Value>
+              </Parameter>
+              <Parameter Name="document_number">
+                <Value>=Parameters!document_number.Value</Value>
+              </Parameter>
+              <Parameter Name="deb_acc">
+                <Value>=Parameters!deb_acc.Value</Value>
+              </Parameter>
+              <Parameter Name="tax_code">
+                <Value>=Parameters!tax_code.Value</Value>
+              </Parameter>
+              <Parameter Name="cred_acc">
+                <Value>=Parameters!cred_acc.Value</Value>
+              </Parameter>
+              <Parameter Name="deb_bank">
+                <Value>=Parameters!deb_bank.Value</Value>
+              </Parameter>
+              <Parameter Name="quality">
+                <Value>=Parameters!quality.Value</Value>
+              </Parameter>
+              <Parameter Name="soc_card">
+                <Value>=Parameters!soc_card.Value</Value>
+              </Parameter>
+              <Parameter Name="credit_bank">
+                <Value>=Parameters!credit_bank.Value</Value>
+              </Parameter>
+              <Parameter Name="amount">
+                <Value>=Parameters!amount.Value</Value>
+              </Parameter>
+              <Parameter Name="currency">
+                <Value>=Parameters!currency.Value</Value>
+              </Parameter>
+              <Parameter Name="descr">
+                <Value>=Parameters!descr.Value</Value>
+              </Parameter>
+              <Parameter Name="reciever">
+                <Value>=Parameters!reciever.Value</Value>
+              </Parameter>
+              <Parameter Name="confirm_date">
+                <Value>=Parameters!confirm_date.Value</Value>
+              </Parameter>
+              <Parameter Name="police_code">
+                <Value>=Parameters!police_code.Value</Value>
+              </Parameter>
+              <Parameter Name="for_HB">
+                <Value>=Parameters!for_HB.Value</Value>
+              </Parameter>
+              <Parameter Name="print_soc_card">
+                <Value>=Parameters!print_soc_card.Value</Value>
+              </Parameter>
+              <Parameter Name="reg_code">
+                <Value>=Parameters!reg_code.Value</Value>
+              </Parameter>
+              <Parameter Name="doc_id">
+                <Value>=Parameters!doc_id.Value</Value>
+              </Parameter>
+              <Parameter Name="cust_name">
+                <Value>=Parameters!cust_name.Value</Value>
+              </Parameter>
+              <Parameter Name="is_copy">
+                <Value>=Parameters!is_copy.Value</Value>
+              </Parameter>
+              <Parameter Name="reciever_tax_code">
+                <Value>=Parameters!reciever_tax_code.Value</Value>
+              </Parameter>
+              <Parameter Name="TransactionTime">
+                <Value>=Parameters!TransactionTime.Value</Value>
+              </Parameter>
+              <Parameter Name="commission">
+                <Value>=Parameters!commission.Value</Value>
+              </Parameter>
+              <Parameter Name="set_number">
+                <Value>=Parameters!set_number.Value</Value>
+              </Parameter>
+              <Parameter Name="debtor_soccard">
+                <Value>=Parameters!debtor_soccard.Value</Value>
+              </Parameter>
+              <Parameter Name="debtor_code_of_tax">
+                <Value>=Parameters!debtor_code_of_tax.Value</Value>
+              </Parameter>
+              <Parameter Name="debtor_Name">
+                <Value>=Parameters!debtor_Name.Value</Value>
+              </Parameter>
+            </Parameters>
+            <Top>0.58304cm</Top>
+            <Left>0.68802cm</Left>
+            <Height>6.6475cm</Height>
+            <Width>18.98292cm</Width>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Subreport>
+          <Subreport Name="Subreport2">
+            <ReportName>Sub_Report_Payment_order</ReportName>
+            <Parameters>
+              <Parameter Name="reg_date">
+                <Value>=Parameters!reg_date.Value</Value>
+              </Parameter>
+              <Parameter Name="document_number">
+                <Value>=Parameters!document_number.Value</Value>
+              </Parameter>
+              <Parameter Name="deb_acc">
+                <Value>=Parameters!deb_acc.Value</Value>
+              </Parameter>
+              <Parameter Name="tax_code">
+                <Value>=Parameters!tax_code.Value</Value>
+              </Parameter>
+              <Parameter Name="cred_acc">
+                <Value>=Parameters!cred_acc.Value</Value>
+              </Parameter>
+              <Parameter Name="deb_bank">
+                <Value>=Parameters!deb_bank.Value</Value>
+              </Parameter>
+              <Parameter Name="quality">
+                <Value>=Parameters!quality.Value</Value>
+              </Parameter>
+              <Parameter Name="soc_card">
+                <Value>=Parameters!soc_card.Value</Value>
+              </Parameter>
+              <Parameter Name="credit_bank">
+                <Value>=Parameters!credit_bank.Value</Value>
+              </Parameter>
+              <Parameter Name="amount">
+                <Value>=Parameters!amount.Value</Value>
+              </Parameter>
+              <Parameter Name="currency">
+                <Value>=Parameters!currency.Value</Value>
+              </Parameter>
+              <Parameter Name="descr">
+                <Value>=Parameters!descr.Value</Value>
+              </Parameter>
+              <Parameter Name="reciever">
+                <Value>=Parameters!reciever.Value</Value>
+              </Parameter>
+              <Parameter Name="confirm_date">
+                <Value>=Parameters!confirm_date.Value</Value>
+              </Parameter>
+              <Parameter Name="police_code">
+                <Value>=Parameters!police_code.Value</Value>
+              </Parameter>
+              <Parameter Name="for_HB">
+                <Value>=Parameters!for_HB.Value</Value>
+              </Parameter>
+              <Parameter Name="print_soc_card">
+                <Value>=Parameters!print_soc_card.Value</Value>
+              </Parameter>
+              <Parameter Name="reg_code">
+                <Value>=Parameters!reg_code.Value</Value>
+              </Parameter>
+              <Parameter Name="doc_id">
+                <Value>=Parameters!doc_id.Value</Value>
+              </Parameter>
+              <Parameter Name="cust_name">
+                <Value>=Parameters!cust_name.Value</Value>
+              </Parameter>
+              <Parameter Name="is_copy">
+                <Value>=Parameters!is_copy.Value</Value>
+              </Parameter>
+              <Parameter Name="reciever_tax_code">
+                <Value>=Parameters!reciever_tax_code.Value</Value>
+              </Parameter>
+              <Parameter Name="TransactionTime">
+                <Value>=Parameters!TransactionTime.Value</Value>
+              </Parameter>
+              <Parameter Name="commission">
+                <Value>=Parameters!commission.Value</Value>
+              </Parameter>
+              <Parameter Name="set_number">
+                <Value>=Parameters!set_number.Value</Value>
+              </Parameter>
+              <Parameter Name="debtor_soccard">
+                <Value>=Parameters!debtor_soccard.Value</Value>
+              </Parameter>
+              <Parameter Name="debtor_code_of_tax">
+                <Value>=Parameters!debtor_code_of_tax.Value</Value>
+              </Parameter>
+              <Parameter Name="debtor_Name">
+                <Value>=Parameters!debtor_Name.Value</Value>
+              </Parameter>
+            </Parameters>
+            <OmitBorderOnPageBreak>true</OmitBorderOnPageBreak>
+            <Top>8.66316cm</Top>
+            <Left>0.68802cm</Left>
+            <Height>7.6cm</Height>
+            <Width>18.98292cm</Width>
+            <ZIndex>1</ZIndex>
+            <Visibility>
+              <Hidden>=iif(Parameters!for_HB.Value=0, false,true)</Hidden>
+            </Visibility>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Subreport>
+          <Rectangle Name="Rectangle1">
+            <KeepTogether>true</KeepTogether>
+            <Top>7.93962cm</Top>
+            <Left>1.0287cm</Left>
+            <Height>0.04621cm</Height>
+            <Width>18.64224cm</Width>
+            <ZIndex>2</ZIndex>
+            <Visibility>
+              <Hidden>=iif(Parameters!for_HB.Value=0, false,true)</Hidden>
+            </Visibility>
+            <Style>
+              <Border>
+                <Style>None</Style>
+                <Width>0.25pt</Width>
+              </Border>
+              <TopBorder>
+                <Style>Solid</Style>
+              </TopBorder>
+            </Style>
+          </Rectangle>
+        </ReportItems>
+        <Height>19.99242cm</Height>
+        <Style />
+      </Body>
+      <Width>20.28974cm</Width>
+      <Page>
+        <PageHeight>29.7cm</PageHeight>
+        <PageWidth>21cm</PageWidth>
+        <LeftMargin>0cm</LeftMargin>
+        <RightMargin>0cm</RightMargin>
+        <TopMargin>0cm</TopMargin>
+        <BottomMargin>0cm</BottomMargin>
+        <ColumnSpacing>1.27cm</ColumnSpacing>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <ReportParameters>
+    <ReportParameter Name="reg_date">
+      <DataType>DateTime</DataType>
+      <Prompt>reg_date</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="document_number">
+      <DataType>String</DataType>
+      <Prompt>document_number</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="deb_acc">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>deb_acc</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="tax_code">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>tax_code</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="cred_acc">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>cred_acc</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="deb_bank">
+      <DataType>String</DataType>
+      <Prompt>deb_bank</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="quality">
+      <DataType>Integer</DataType>
+      <Nullable>true</Nullable>
+      <Prompt>quality</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="soc_card">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>soc_card</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="credit_bank">
+      <DataType>Float</DataType>
+      <Prompt>credit_bank</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="amount">
+      <DataType>Float</DataType>
+      <Prompt>amount</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="currency">
+      <DataType>String</DataType>
+      <Prompt>currency</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="descr">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>descr</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="reciever">
+      <DataType>String</DataType>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>reciever</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="confirm_date">
+      <DataType>DateTime</DataType>
+      <Nullable>true</Nullable>
+      <Prompt>confirm_date</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="police_code">
+      <DataType>Integer</DataType>
+      <Prompt>police_code</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="for_HB">
+      <DataType>Integer</DataType>
+      <Prompt>for_HB</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="print_soc_card">
+      <DataType>Boolean</DataType>
+      <Prompt>print_soc_card</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="reg_code">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>reg_code</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="doc_id">
+      <DataType>Integer</DataType>
+      <Nullable>true</Nullable>
+      <Prompt>doc_id</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="cust_name">
+      <DataType>String</DataType>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>cust_name</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="is_copy">
+      <DataType>Boolean</DataType>
+      <Prompt>is_copy</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="reciever_tax_code">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>reciever_tax_code</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="TransactionTime">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>TransactionTime</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="debtor_soccard">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>debtor_soccard</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="debtor_code_of_tax">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>debtor_code_of_tax</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="debtor_Name">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>debtor_Name</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="set_number">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <Prompt>set_number</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="commission">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>commission</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+  </ReportParameters>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>8</NumberOfColumns>
+      <NumberOfRows>4</NumberOfRows>
+      <CellDefinitions>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>reg_date</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>document_number</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>2</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>deb_acc</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>3</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>tax_code</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>4</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>cred_acc</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>5</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>deb_bank</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>6</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>quality</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>7</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>soc_card</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>1</RowIndex>
+          <ParameterName>credit_bank</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>1</RowIndex>
+          <ParameterName>amount</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>2</ColumnIndex>
+          <RowIndex>1</RowIndex>
+          <ParameterName>currency</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>3</ColumnIndex>
+          <RowIndex>1</RowIndex>
+          <ParameterName>descr</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>4</ColumnIndex>
+          <RowIndex>1</RowIndex>
+          <ParameterName>reciever</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>5</ColumnIndex>
+          <RowIndex>1</RowIndex>
+          <ParameterName>confirm_date</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>6</ColumnIndex>
+          <RowIndex>1</RowIndex>
+          <ParameterName>police_code</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>7</ColumnIndex>
+          <RowIndex>1</RowIndex>
+          <ParameterName>for_HB</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>2</RowIndex>
+          <ParameterName>print_soc_card</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>2</RowIndex>
+          <ParameterName>reg_code</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>2</ColumnIndex>
+          <RowIndex>2</RowIndex>
+          <ParameterName>doc_id</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>3</ColumnIndex>
+          <RowIndex>2</RowIndex>
+          <ParameterName>cust_name</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>4</ColumnIndex>
+          <RowIndex>2</RowIndex>
+          <ParameterName>is_copy</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>5</ColumnIndex>
+          <RowIndex>2</RowIndex>
+          <ParameterName>reciever_tax_code</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>6</ColumnIndex>
+          <RowIndex>2</RowIndex>
+          <ParameterName>TransactionTime</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>7</ColumnIndex>
+          <RowIndex>2</RowIndex>
+          <ParameterName>debtor_soccard</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>3</RowIndex>
+          <ParameterName>debtor_code_of_tax</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>3</RowIndex>
+          <ParameterName>debtor_Name</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>2</ColumnIndex>
+          <RowIndex>3</RowIndex>
+          <ParameterName>set_number</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>3</ColumnIndex>
+          <RowIndex>3</RowIndex>
+          <ParameterName>commission</ParameterName>
+        </CellDefinition>
+      </CellDefinitions>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
+  <Language>en-US</Language>
+  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
+  <rd:ReportUnitType>Cm</rd:ReportUnitType>
+  <rd:ReportID>3740d24e-1fa8-479a-a555-a58dab05d736</rd:ReportID>
+</Report>

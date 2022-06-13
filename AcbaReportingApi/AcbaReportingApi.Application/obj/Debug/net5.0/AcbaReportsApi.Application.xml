@@ -1,0 +1,438 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AcbaReportsApi.Application</name>
+    </assembly>
+    <members>
+        <member name="T:AcbaReportsApi.Application.Models.ExportFormat">
+            <summary>
+            File Export Formats.
+            </summary>
+        </member>
+        <member name="F:AcbaReportsApi.Application.Models.ExportFormat.Image">
+            <summary>Image</summary>
+        </member>
+        <member name="F:AcbaReportsApi.Application.Models.ExportFormat.PDF">
+            <summary>PDF</summary>
+        </member>
+        <member name="F:AcbaReportsApi.Application.Models.ExportFormat.Excel">
+            <summary>Excel</summary>
+        </member>
+        <member name="F:AcbaReportsApi.Application.Models.ExportFormat.Word">
+            <summary>Word</summary>
+        </member>
+        <member name="T:AcbaReportsApi.Application.Models.ReportsNames">
+            <summary>
+            Report-ների անունները
+            </summary>
+        </member>
+        <member name="T:ReportExecutionService.TrustedUserHeader">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.TrustedUserHeader.UserName">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.TrustedUserHeader.UserToken">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.Extension">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.Extension.ExtensionType">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.Extension.Name">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.Extension.LocalizedName">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.Extension.Visible">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.Extension.IsModelGenerationSupported">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.ExtensionTypeEnum">
+            <remarks/>
+        </member>
+        <member name="F:ReportExecutionService.ExtensionTypeEnum.Delivery">
+            <remarks/>
+        </member>
+        <member name="F:ReportExecutionService.ExtensionTypeEnum.Render">
+            <remarks/>
+        </member>
+        <member name="F:ReportExecutionService.ExtensionTypeEnum.Data">
+            <remarks/>
+        </member>
+        <member name="F:ReportExecutionService.ExtensionTypeEnum.All">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.DocumentMapNode">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.DocumentMapNode.Label">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.DocumentMapNode.UniqueName">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.DocumentMapNode.Children">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.ExtensionSettings">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ExtensionSettings.Extension">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ExtensionSettings.ParameterValues">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.ParameterFieldReference">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ParameterFieldReference.ParameterName">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ParameterFieldReference.FieldAlias">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.ParameterValueOrFieldReference">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.ParameterValue">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ParameterValue.Name">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ParameterValue.Value">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ParameterValue.Label">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.DataSourceCredentials">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.DataSourceCredentials.DataSourceName">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.DataSourceCredentials.UserName">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.DataSourceCredentials.Password">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.Warning">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.Warning.Code">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.Warning.Severity">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.Warning.ObjectName">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.Warning.ObjectType">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.Warning.Message">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.ExecutionHeader">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ExecutionHeader.ExecutionID">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.ParametersGridCellDefinition">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ParametersGridCellDefinition.RowIndex">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ParametersGridCellDefinition.ColumnsIndex">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ParametersGridCellDefinition.ParameterName">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.ParametersGridLayoutDefinition">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ParametersGridLayoutDefinition.NumberOfColumns">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ParametersGridLayoutDefinition.NumberOfRows">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ParametersGridLayoutDefinition.CellDefinitions">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.ReportMargins">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportMargins.Top">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportMargins.Bottom">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportMargins.Left">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportMargins.Right">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.ReportPaperSize">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportPaperSize.Height">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportPaperSize.Width">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.PageSettings">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.PageSettings.PaperSize">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.PageSettings.Margins">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.DataSourcePrompt">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.DataSourcePrompt.Name">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.DataSourcePrompt.DataSourceID">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.DataSourcePrompt.Prompt">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.ValidValue">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ValidValue.Label">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ValidValue.Value">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.ReportParameter">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportParameter.Name">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportParameter.Type">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportParameter.TypeSpecified">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportParameter.Nullable">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportParameter.NullableSpecified">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportParameter.AllowBlank">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportParameter.AllowBlankSpecified">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportParameter.MultiValue">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportParameter.MultiValueSpecified">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportParameter.QueryParameter">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportParameter.QueryParameterSpecified">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportParameter.Prompt">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportParameter.PromptUser">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportParameter.PromptUserSpecified">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportParameter.Dependencies">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportParameter.ValidValuesQueryBased">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportParameter.ValidValuesQueryBasedSpecified">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportParameter.ValidValues">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportParameter.DefaultValuesQueryBased">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportParameter.DefaultValuesQueryBasedSpecified">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportParameter.DefaultValues">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportParameter.State">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportParameter.StateSpecified">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ReportParameter.ErrorMessage">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.ParameterTypeEnum">
+            <remarks/>
+        </member>
+        <member name="F:ReportExecutionService.ParameterTypeEnum.Boolean">
+            <remarks/>
+        </member>
+        <member name="F:ReportExecutionService.ParameterTypeEnum.DateTime">
+            <remarks/>
+        </member>
+        <member name="F:ReportExecutionService.ParameterTypeEnum.Integer">
+            <remarks/>
+        </member>
+        <member name="F:ReportExecutionService.ParameterTypeEnum.Float">
+            <remarks/>
+        </member>
+        <member name="F:ReportExecutionService.ParameterTypeEnum.String">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.ParameterStateEnum">
+            <remarks/>
+        </member>
+        <member name="F:ReportExecutionService.ParameterStateEnum.HasValidValue">
+            <remarks/>
+        </member>
+        <member name="F:ReportExecutionService.ParameterStateEnum.MissingValidValue">
+            <remarks/>
+        </member>
+        <member name="F:ReportExecutionService.ParameterStateEnum.HasOutstandingDependencies">
+            <remarks/>
+        </member>
+        <member name="F:ReportExecutionService.ParameterStateEnum.DynamicValuesUnavailable">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.ExecutionInfo">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ExecutionInfo.HasSnapshot">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ExecutionInfo.NeedsProcessing">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ExecutionInfo.AllowQueryExecution">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ExecutionInfo.CredentialsRequired">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ExecutionInfo.ParametersRequired">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ExecutionInfo.ExpirationDateTime">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ExecutionInfo.ExecutionDateTime">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ExecutionInfo.NumPages">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ExecutionInfo.Parameters">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ExecutionInfo.DataSourcePrompts">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ExecutionInfo.HasDocumentMap">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ExecutionInfo.ExecutionID">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ExecutionInfo.ReportPath">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ExecutionInfo.HistoryID">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ExecutionInfo.ReportPageSettings">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ExecutionInfo.AutoRefreshInterval">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.ExecutionInfo2">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ExecutionInfo2.PageCountMode">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.PageCountMode">
+            <remarks/>
+        </member>
+        <member name="F:ReportExecutionService.PageCountMode.Actual">
+            <remarks/>
+        </member>
+        <member name="F:ReportExecutionService.PageCountMode.Estimate">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.ExecutionInfo3">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ExecutionInfo3.ParametersLayout">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.ServerInfoHeader">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ServerInfoHeader.ReportServerVersionNumber">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ServerInfoHeader.ReportServerEdition">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ServerInfoHeader.ReportServerVersion">
+            <remarks/>
+        </member>
+        <member name="P:ReportExecutionService.ServerInfoHeader.ReportServerDateTime">
+            <remarks/>
+        </member>
+        <member name="T:ReportExecutionService.SortDirectionEnum">
+            <remarks/>
+        </member>
+        <member name="F:ReportExecutionService.SortDirectionEnum.None">
+            <remarks/>
+        </member>
+        <member name="F:ReportExecutionService.SortDirectionEnum.Ascending">
+            <remarks/>
+        </member>
+        <member name="F:ReportExecutionService.SortDirectionEnum.Descending">
+            <remarks/>
+        </member>
+    </members>
+</doc>

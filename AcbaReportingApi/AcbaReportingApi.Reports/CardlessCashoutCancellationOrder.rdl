@@ -1,0 +1,1505 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="HBBaseDataSource">
+      <DataSourceReference>HBBaseDataSource</DataSourceReference>
+      <rd:SecurityType>None</rd:SecurityType>
+      <rd:DataSourceID>280e0fca-9bae-4d20-b78c-4583d6488dd5</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="DataSet1">
+      <Query>
+        <DataSourceName>HBBaseDataSource</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@StartDate">
+            <Value>=Parameters!StartDate.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@EndDate">
+            <Value>=Parameters!EndDate.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@DocId">
+            <Value>=Parameters!DocId.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@CustomerNumber">
+            <Value>=Parameters!CustomerNumber.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@Amount">
+            <Value>=Parameters!Amount.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>SELECT row_number() OVER(order by hi.doc_id desc) AS row, customer_number, d.order_OTP, b.cancellation_doc_id, cancellation_change_set_number,  debet_account, b.cancelation_debet_account AS cancelation_credit_account, credit_account, amount, hb.currency AS currency_for_payment,amount_for_payment,[dbo].[fnc_kurs_for_date](a.currency,registration_date) * amount AS amount_AMD,a.currency, hi.*, cancellation_change_date, description_cancellation
+FROM Tbl_HB_documents hb
+INNER JOIN tbl_cardless_cashout_order_details d ON hb.doc_id = d.doc_id 
+LEFT JOIN (SELECT a.doc_id AS cancellation_doc_id, a.debet_account AS cancelation_debet_account, app_id, c.change_date AS cancellation_change_date, change_set_number AS  cancellation_change_set_number, description AS description_cancellation  FROM Tbl_HB_documents a
+INNER JOIN Tbl_HB_Products_Identity b ON a.doc_id = b.hb_doc_id
+INNER JOIN [Tbl_HB_quality_history] c ON a.doc_id = c.doc_id
+WHERE document_type = 257 and c.quality = 30) b ON hb.doc_id = b.app_id
+LEFT JOIN (
+SELECT h1.doc_id, h1.quality AS quality1, h1.change_date AS change_date1, h2.quality AS quality2, h2.change_date AS change_date2, h3.quality AS quality3, h3.change_date AS change_date3
+FROM [dbo].[Tbl_HB_quality_history] h1
+OUTER APPLY( select doc_id, quality, change_date FROM  [dbo].[Tbl_HB_quality_history] WHERE doc_id=h1.doc_id and quality=3) h2
+OUTER APPLY( select doc_id, quality, change_date FROM  [dbo].[Tbl_HB_quality_history] WHERE doc_id=h1.doc_id and quality=30) h3
+WHERE h1.quality = 1
+) hi ON hb.doc_id = hi.doc_id
+INNER JOIN (SELECT currency,arm_number FROM [tbl_all_accounts;]) a ON hb.debet_account = a.arm_number
+WHERE document_type = 238 
+AND @StartDate &lt;= hb.registration_date AND hb.registration_date &lt;= @EndDate 
+AND hb.doc_id = CASE ISNULL(@DocId, 0) WHEN 0 THEN hb.doc_id  ELSE @DocId  END
+AND customer_number = CASE ISNULL(@CustomerNumber, 0) WHEN 0 THEN customer_number ELSE @CustomerNumber END
+--AND cancellation_change_set_number = CASE ISNULL(@EmployeeNumber, 0) WHEN 0 THEN cancellation_change_set_number  ELSE @EmployeeNumber END
+AND amount = CASE ISNULL(@Amount, 0) WHEN 0 THEN amount  ELSE @Amount END</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="row">
+          <DataField>row</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="customer_number">
+          <DataField>customer_number</DataField>
+          <rd:TypeName>System.Double</rd:TypeName>
+        </Field>
+        <Field Name="order_OTP">
+          <DataField>order_OTP</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="cancellation_doc_id">
+          <DataField>cancellation_doc_id</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="cancellation_change_set_number">
+          <DataField>cancellation_change_set_number</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="debet_account">
+          <DataField>debet_account</DataField>
+          <rd:TypeName>System.Double</rd:TypeName>
+        </Field>
+        <Field Name="cancelation_credit_account">
+          <DataField>cancelation_credit_account</DataField>
+          <rd:TypeName>System.Double</rd:TypeName>
+        </Field>
+        <Field Name="credit_account">
+          <DataField>credit_account</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="amount">
+          <DataField>amount</DataField>
+          <rd:TypeName>System.Double</rd:TypeName>
+        </Field>
+        <Field Name="currency_for_payment">
+          <DataField>currency_for_payment</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="amount_for_payment">
+          <DataField>amount_for_payment</DataField>
+          <rd:TypeName>System.Double</rd:TypeName>
+        </Field>
+        <Field Name="amount_AMD">
+          <DataField>amount_AMD</DataField>
+          <rd:TypeName>System.Double</rd:TypeName>
+        </Field>
+        <Field Name="currency">
+          <DataField>currency</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="doc_id">
+          <DataField>doc_id</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="quality1">
+          <DataField>quality1</DataField>
+          <rd:TypeName>System.Int16</rd:TypeName>
+        </Field>
+        <Field Name="change_date1">
+          <DataField>change_date1</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="quality2">
+          <DataField>quality2</DataField>
+          <rd:TypeName>System.Int16</rd:TypeName>
+        </Field>
+        <Field Name="change_date2">
+          <DataField>change_date2</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="quality3">
+          <DataField>quality3</DataField>
+          <rd:TypeName>System.Int16</rd:TypeName>
+        </Field>
+        <Field Name="change_date3">
+          <DataField>change_date3</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="cancellation_change_date">
+          <DataField>cancellation_change_date</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="description_cancellation">
+          <DataField>description_cancellation</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Textbox Name="textbox1">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>Անքարտ կանխիկացման/Անքարտ կանխիկացման չեղարկման հայտեր</Value>
+                    <Style>
+                      <FontStyle>Normal</FontStyle>
+                      <FontFamily>Segoe UI Light</FontFamily>
+                      <FontSize>16pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                      <TextDecoration>None</TextDecoration>
+                      <Color>#4f81bd</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>textbox1</rd:DefaultName>
+            <Height>0.45083in</Height>
+            <Width>18.29558in</Width>
+            <Style>
+              <Border>
+                <Style>Solid</Style>
+              </Border>
+              <VerticalAlign>Bottom</VerticalAlign>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Tablix Name="TableForgiveness">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn>
+                  <Width>0.29167in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.98698in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.82031in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.32248in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.35851in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.44011in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.97657in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.23696in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.52605in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.275in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.72379in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.65556in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.70937in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.775in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.96745in</Width>
+                </TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow>
+                  <Height>0.67819in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox4">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Հ/Հ</Value>
+                                  <Style>
+                                    <FontFamily>Segoe UI</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>#666666</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox4</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="textbox2">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Հայտի համար</Value>
+                                  <Style>
+                                    <FontStyle>Normal</FontStyle>
+                                    <FontFamily>Sylfaen</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <TextDecoration>None</TextDecoration>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <FontFamily />
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>textbox2</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <FontFamily />
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="textbox3">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value> TrnId/Relative Number</Value>
+                                  <Style>
+                                    <FontStyle>Normal</FontStyle>
+                                    <FontFamily>Sylfaen</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <TextDecoration>None</TextDecoration>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>textbox3</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <FontFamily />
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="textbox7">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Դեբետագրվող հաշիվ</Value>
+                                  <Style>
+                                    <FontStyle>Italic</FontStyle>
+                                    <FontFamily>Segoe UI</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <FontFamily />
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>textbox6</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <FontFamily />
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="textbox8">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Կրեդիտագրվող հաշիվ</Value>
+                                  <Style>
+                                    <FontStyle>Normal</FontStyle>
+                                    <FontFamily>Sylfaen</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <TextDecoration>None</TextDecoration>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <FontFamily />
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>textbox7</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <FontFamily />
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="textbox9">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Գործարքի գումար</Value>
+                                  <Style>
+                                    <FontStyle>Normal</FontStyle>
+                                    <FontFamily>sylfaen</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <TextDecoration>None</TextDecoration>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>textbox8</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <FontFamily />
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="textbox10">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Գործարքի արժույթ</Value>
+                                  <Style>
+                                    <FontStyle>Normal</FontStyle>
+                                    <FontFamily>sylfaen</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <TextDecoration>None</TextDecoration>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <FontFamily />
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>textbox9</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <FontFamily />
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox32">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Գործարքի միջնորդավճար</Value>
+                                  <Style>
+                                    <FontStyle>Normal</FontStyle>
+                                    <FontFamily>sylfaen</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <TextDecoration>None</TextDecoration>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox32</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="textbox11">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Գործարքի գումար դեբետագրվող հաշվի արժույթով</Value>
+                                  <Style>
+                                    <FontStyle>Normal</FontStyle>
+                                    <FontFamily>Sylfaen</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <TextDecoration>None</TextDecoration>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <FontFamily />
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>textbox10</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <FontFamily />
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox34">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Դեբետագրվող հաշվի արժույթ</Value>
+                                  <Style>
+                                    <FontStyle>Normal</FontStyle>
+                                    <FontFamily>Sylfaen</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <TextDecoration>None</TextDecoration>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox34</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox5">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Հայտը մուտքագրման ամսաթիվ/ժամ</Value>
+                                  <Style>
+                                    <FontStyle>Italic</FontStyle>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox5</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox6">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Հայտը ուղարկման ամսաթիվ/ժամ</Value>
+                                  <Style>
+                                    <FontStyle>Italic</FontStyle>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox6</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox12">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Հայտը հաստատման ամսաթիվ/ժամ</Value>
+                                  <Style>
+                                    <FontStyle>Italic</FontStyle>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox12</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox13">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Հայտը մերժման Ամսաթիվ/ժամ</Value>
+                                  <Style>
+                                    <FontStyle>Italic</FontStyle>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox13</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="textbox22">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Չեղարկման պատճառ</Value>
+                                  <Style>
+                                    <FontStyle>Normal</FontStyle>
+                                    <FontFamily>Sylfaen</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <TextDecoration>None</TextDecoration>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <FontFamily />
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>textbox15</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <FontFamily />
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.21in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="row">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!row.Value</Value>
+                                  <Style>
+                                    <FontFamily>Segoe UI</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <Color>#333333</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>row</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="doc_id">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!doc_id.Value</Value>
+                                  <Style>
+                                    <FontFamily>Segoe UI</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <Format>0;(0)</Format>
+                                    <Color>#333333</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>doc_id</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <FontFamily />
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="order_OTP">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!order_OTP.Value</Value>
+                                  <Style>
+                                    <FontFamily>Segoe UI</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <Color>#333333</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>order_OTP</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <FontFamily />
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="debet_account">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!debet_account.Value</Value>
+                                  <Style>
+                                    <FontFamily>Segoe UI</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <Format>0;(0)</Format>
+                                    <Color>#333333</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>debet_account</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <FontFamily />
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="cancelation_credit_account">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!cancelation_credit_account.Value</Value>
+                                  <Style>
+                                    <FontFamily>Segoe UI</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <Color>#333333</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>cancelation_credit_account</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <FontFamily />
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="amount">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!amount.Value</Value>
+                                  <Style>
+                                    <FontFamily>Segoe UI</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <Color>#333333</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>amount</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <FontFamily />
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="currency_for_payment">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!currency_for_payment.Value</Value>
+                                  <Style>
+                                    <FontFamily>Segoe UI</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <Format>#,0.00;(#,0.00)</Format>
+                                    <Color>#333333</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>currency_for_payment</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <FontFamily />
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="amount_for_payment">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!amount_for_payment.Value</Value>
+                                  <Style>
+                                    <FontFamily>Segoe UI</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <Color>#333333</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>amount_for_payment</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="amount_AMD">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!amount_AMD.Value</Value>
+                                  <Style>
+                                    <FontFamily>Segoe UI</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <Color>#333333</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>amount_AMD</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="currency">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!currency.Value</Value>
+                                  <Style>
+                                    <FontFamily>Segoe UI</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <Format>#,0.00;(#,0.00)</Format>
+                                    <Color>#333333</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>currency</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="change_date1">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!change_date1.Value</Value>
+                                  <Style>
+                                    <FontFamily>Segoe UI</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <Color>#333333</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>change_date1</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="change_date2">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!change_date2.Value</Value>
+                                  <Style>
+                                    <FontFamily>Segoe UI</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <Color>#333333</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>change_date2</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="change_date3">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!change_date3.Value</Value>
+                                  <Style>
+                                    <FontFamily>Segoe UI</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <Color>#333333</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>change_date3</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="cancellation_change_date">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!cancellation_change_date.Value</Value>
+                                  <Style>
+                                    <FontFamily>Segoe UI</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <Color>#333333</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>cancellation_change_date</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="description_cancellation">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!description_cancellation.Value</Value>
+                                  <Style>
+                                    <FontFamily>Segoe UI</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                    <Color>#333333</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>description_cancellation</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember>
+                  <KeepWithGroup>After</KeepWithGroup>
+                  <RepeatOnNewPage>true</RepeatOnNewPage>
+                  <KeepTogether>true</KeepTogether>
+                </TablixMember>
+                <TablixMember>
+                  <Group Name="table1_Details_Group">
+                    <DataElementName>Detail</DataElementName>
+                  </Group>
+                  <TablixMembers>
+                    <TablixMember />
+                  </TablixMembers>
+                  <DataElementName>Detail_Collection</DataElementName>
+                  <DataElementOutput>Output</DataElementOutput>
+                  <KeepTogether>true</KeepTogether>
+                </TablixMember>
+              </TablixMembers>
+            </TablixRowHierarchy>
+            <DataSetName>DataSet1</DataSetName>
+            <Top>0.48444in</Top>
+            <Left>0.02314cm</Left>
+            <Height>0.88819in</Height>
+            <Width>20.06581in</Width>
+            <ZIndex>1</ZIndex>
+            <Style />
+          </Tablix>
+        </ReportItems>
+        <Height>3.16542in</Height>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Body>
+      <Width>26.40652in</Width>
+      <Page>
+        <PageHeight>8in</PageHeight>
+        <PageWidth>13.4in</PageWidth>
+        <LeftMargin>0.2in</LeftMargin>
+        <RightMargin>0.2in</RightMargin>
+        <TopMargin>1in</TopMargin>
+        <BottomMargin>0.2in</BottomMargin>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <ReportParameters>
+    <ReportParameter Name="StartDate">
+      <DataType>DateTime</DataType>
+      <Prompt>StartDate</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="EndDate">
+      <DataType>DateTime</DataType>
+      <Prompt>EndDate</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="DocId">
+      <DataType>Integer</DataType>
+      <Nullable>true</Nullable>
+      <Prompt>DocId</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="CustomerNumber">
+      <DataType>Integer</DataType>
+      <Nullable>true</Nullable>
+      <Prompt>CustomerNumber</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="EmployeeNumber">
+      <DataType>Integer</DataType>
+      <Nullable>true</Nullable>
+      <Prompt>EmployeeNumber</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="OrderCode">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <Prompt>OrderCode</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="Amount">
+      <DataType>Float</DataType>
+      <Nullable>true</Nullable>
+      <Prompt>Amount</Prompt>
+    </ReportParameter>
+  </ReportParameters>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>2</NumberOfColumns>
+      <NumberOfRows>4</NumberOfRows>
+      <CellDefinitions>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>StartDate</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>EndDate</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>1</RowIndex>
+          <ParameterName>DocId</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>2</RowIndex>
+          <ParameterName>EmployeeNumber</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>1</RowIndex>
+          <ParameterName>CustomerNumber</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>3</RowIndex>
+          <ParameterName>Amount</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>2</RowIndex>
+          <ParameterName>OrderCode</ParameterName>
+        </CellDefinition>
+      </CellDefinitions>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
+  <EmbeddedImages>
+    <EmbeddedImage Name="ACBALogo">
+      <MIMEType>image/png</MIMEType>
+      <ImageData>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</ImageData>
+    </EmbeddedImage>
+  </EmbeddedImages>
+  <Language>en-US</Language>
+  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
+  <rd:ReportUnitType>Inch</rd:ReportUnitType>
+  <rd:ReportID>6b0fa4a4-10e5-4292-aa75-e87af157deb0</rd:ReportID>
+</Report>

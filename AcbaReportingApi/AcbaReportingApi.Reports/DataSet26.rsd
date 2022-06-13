@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SharedDataSet xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/shareddatasetdefinition">
+  <Description />
+  <DataSet Name="DataSet26">
+    <Query>
+      <DataSourceReference>AccOperbaseDataSource</DataSourceReference>
+      <CommandText>SELECT LA.application_date,app_loan_purpose,purchase_price,amount_requested,period_before_CC,analyse_date,percent_offered,fixed_percent,programm,purchase_primary_market,cooperate_with_construction_company,ISNULL(prepayment_amount,0) as prepayment_amount,family_with_children
+FROM Tbl_loan_applications LA 
+INNER JOIN Q_Union_Types Q ON LA.loan_type=Q.code 
+LEFT JOIN Tbl_loan_applications_add_inf AD ON AD.app_id= LA.app_id  
+WHERE LA.app_id =200000457701
+</CommandText>
+    </Query>
+  </DataSet>
+</SharedDataSet>

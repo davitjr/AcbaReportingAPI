@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AcbaReportsApi</name>
+    </assembly>
+    <members>
+        <member name="M:AcbaReportsApi.Controllers.AcbaReportsController.GetReportRequestAsync(AcbaReportsApi.Application.DTOs.Report.SSRSRequest)">
+            <summary>
+            Get Data From External Api
+            </summary>
+            <returns></returns>
+            <response code="200">The request has succeeded.</response>
+            <response code="400">The server cannot or will not process the request due to something that is perceived to be a client error (e.g., malformed request syntax, invalid request message framing, or deceptive request routing).</response>
+            <response code="401">The request has not been applied because it lacks valid authentication credentials for the target resource.</response>
+            <response code="500">The server encountered an unexpected condition that prevented it from fulfilling the request.</response>     
+        </member>
+    </members>
+</doc>

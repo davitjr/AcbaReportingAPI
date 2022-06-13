@@ -1,0 +1,2489 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report MustUnderstand="df" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:df="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition/defaultfontfamily">
+  <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="AccOperbaseDataSource">
+      <DataSourceReference>AccOperbaseDataSource</DataSourceReference>
+      <rd:SecurityType>None</rd:SecurityType>
+      <rd:DataSourceID>5505cf39-9e64-4516-9600-7f227fbd1369</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="QuestionnaireCustomerInfoDataSet">
+      <Query>
+        <DataSourceName>AccOperbaseDataSource</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@customerNumber">
+            <Value>=Parameters!customerNumber.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>SELECT        CASE WHEN C.type_of_client != 6 THEN dbo.fnc_convertAnsiToUnicode([description]) ELSE dbo.fnc_convertAnsiToUnicode(C.lastname + ' ' + C.name + ' ' + C.fatersname) END AS customer_description, 
+                         CASE WHEN C.type_of_client = 6 THEN CASE WHEN sex = 1 THEN N'Արական' ELSE N'Իգական' END ELSE '' END AS sex, CASE WHEN C.type_of_client != 6 THEN CONVERT(NVARCHAR(250), C.doc_wydan, 103) 
+                         ELSE CONVERT(NVARCHAR(250), C.birth, 103) END AS birth, dbo.fnc_convertAnsiToUnicode(ISNULL(C.[town-village], N'') + ' ' + ISNULL(C.street, N'') + ' ' + ISNULL(C.house, N'') + ' ' + ISNULL(C.appartment, N'')) AS address, 
+                         CASE WHEN C.passport_country IS NULL THEN CS1.CountryName ELSE CS.CountryName END AS passport_country,
+                             (SELECT        countryCode + areaCode + phoneNumber AS fullphone
+                               FROM            Tbl_Phones
+                               WHERE        (id =
+                                                             (SELECT        phoneId
+                                                               FROM            Tbl_Customer_Phones
+                                                               WHERE        (phoneType = 1) AND (priority = 1) AND (identityId = C.identityId)))) AS phone,
+                             (SELECT        emailAddress
+                               FROM            Tbl_Emails
+                               WHERE        (id =
+                                                             (SELECT        TOP (1) emailId
+                                                               FROM            Tbl_Customer_Emails
+                                                               WHERE        (priority = 1) AND (identityId = C.identityId)))) AS email
+FROM            [Tbl_customers;] AS C LEFT OUTER JOIN
+                         Tbl_Countries AS CS ON C.passport_country = CS.CountryCodeN LEFT OUTER JOIN
+                         Tbl_Countries AS CS1 ON C.country = CS1.CountryCodeN
+WHERE        (C.customer_number = @customerNumber)</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="customer_description">
+          <DataField>customer_description</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="sex">
+          <DataField>sex</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="birth">
+          <DataField>birth</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="address">
+          <DataField>address</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="passport_country">
+          <DataField>passport_country</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="phone">
+          <DataField>phone</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="email">
+          <DataField>email</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="QuestionnaireInfoDataSet">
+      <Query>
+        <DataSourceName>AccOperbaseDataSource</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@contractId">
+            <Value>=Parameters!contractId.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>SELECT DISTINCT 
+                         dbo.fnc_convertAnsiToUnicode(E.description_arm) AS education, ISNULL(B.profession, N'') + CASE WHEN B.[profession] IS NOT NULL AND B.[activity_sphere_id] IS NOT NULL 
+                         THEN '/' ELSE '' END + dbo.fnc_convertAnsiToUnicode(ISNULL(O.description_arm, N'')) AS profession, K.description_arm AS knowledgeLevel, ISNULL(FORMAT(B.last_year_stock_order_count, 'N0') + ' AMD', '') 
+                         AS lastYearCarriedOutTransactions, ISNULL(FORMAT(B.one_order_avg, 'N0') + ' AMD', '') AS oneTransactionAverageVolume, R.description_arm AS riskInclination, ISNULL(FORMAT(B.stock_portfolio, 'N0') + ' AMD', '') 
+                         AS sharesPackageSize, FS.description_arm AS generalFinancialCondition, ISNULL(FORMAT(B.last_year_profit, 'N0') + ' AMD', '') AS previousYearIncome, G.description_arm AS investmentHorizonAndGgoals, 
+                         CASE WHEN FE.id = 1 THEN FE.description_arm + ', ' + CONVERT(NVARCHAR(50), B.[financial_experience_duration]) + ' ' + B.[financial_experience_duration_type] ELSE FE.description_arm END AS workExperience, 
+                         A.description_arm AS assetsCarryingAmount, T.description_arm AS salesTurnover, C.description_arm AS totalCapital, H.registration_date AS reportDate
+FROM            Tbl_broker_contract_details AS B INNER JOIN
+                         Tbl_HB_Documents AS H ON B.doc_id = H.doc_ID LEFT OUTER JOIN
+                         Tbl_type_of_stock_knowledge AS K ON B.stock_knowledge_id = K.id LEFT OUTER JOIN
+                         Tbl_type_of_risk_leaning AS R ON B.risk_leaning_id = R.id LEFT OUTER JOIN
+                         Tbl_type_of_financial_experience AS FE ON B.financial_experience_id = FE.id LEFT OUTER JOIN
+                         Tbl_type_of_financial_situation AS FS ON B.financial_situation_Id = FS.id LEFT OUTER JOIN
+                             (SELECT        Code AS id, description_eng AS description, Description AS description_arm
+                               FROM            Tbl_Ocupation_Code) AS O ON B.activity_sphere_id = O.id LEFT OUTER JOIN
+                             (SELECT        code AS id, Description AS description, Description AS description_arm
+                               FROM            tbl_type_of_education) AS E ON B.education_id = E.id LEFT OUTER JOIN
+                         Tbl_type_of_investment_scope_and_goals AS G ON B.investment_purpose_Id = G.id LEFT OUTER JOIN
+                         tbl_type_of_book_value_of_previous_year_of_assets AS A ON B.book_value_of_previous_year_of_asset_id = A.id LEFT OUTER JOIN
+                         tbl_type_of_last_year_sales_turnover AS T ON B.last_year_sales_turnover_id = T.id LEFT OUTER JOIN
+                         tbl_type_of_last_year_capital AS C ON B.last_year_capital_id = C.id
+WHERE        (B.contract_id = @contractId)</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="education">
+          <DataField>education</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="profession">
+          <DataField>profession</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="knowledgeLevel">
+          <DataField>knowledgeLevel</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="lastYearCarriedOutTransactions">
+          <DataField>lastYearCarriedOutTransactions</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="oneTransactionAverageVolume">
+          <DataField>oneTransactionAverageVolume</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="riskInclination">
+          <DataField>riskInclination</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="sharesPackageSize">
+          <DataField>sharesPackageSize</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="generalFinancialCondition">
+          <DataField>generalFinancialCondition</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="previousYearIncome">
+          <DataField>previousYearIncome</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="investmentHorizonAndGgoals">
+          <DataField>investmentHorizonAndGgoals</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="workExperience">
+          <DataField>workExperience</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="assetsCarryingAmount">
+          <DataField>assetsCarryingAmount</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="salesTurnover">
+          <DataField>salesTurnover</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="totalCapital">
+          <DataField>totalCapital</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="reportDate">
+          <DataField>reportDate</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Image Name="acbaLogo">
+            <Source>Embedded</Source>
+            <Value>Picture11</Value>
+            <Sizing>FitProportional</Sizing>
+            <Top>0.11333in</Top>
+            <Left>0.16544in</Left>
+            <Height>0.36458in</Height>
+            <Width>1.05208in</Width>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Image>
+          <Textbox Name="Textbox1">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>ՆԵՐԴՐՈՒՄԱՅԻՆ ՓՈՐՁԻ ԵՎ ԳԻՏԵԼԻՔՆԵՐԻ ՄԱՍԻՆ ՀԱՐՑԱԹԵՐԹԻԿ</Value>
+                    <Style>
+                      <FontFamily>GHEA Grapalat</FontFamily>
+                      <FontSize>11pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox1</rd:DefaultName>
+            <Top>0.50569in</Top>
+            <Left>0.35086in</Left>
+            <Height>0.25in</Height>
+            <Width>6.01667in</Width>
+            <ZIndex>1</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <VerticalAlign>Middle</VerticalAlign>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Tablix Name="Tablix1">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn>
+                  <Width>0.94424in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.13174in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.79841in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.89216in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.09007in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.5109in</Width>
+                </TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox44">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Հաճախորդի վերաբերյալ տվյալներ</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox44</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#00cc00</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>6</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.15in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox50">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox50</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>6</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox38">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>ԱԱՀ կամ անվանում</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox38</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>2</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="customer_description">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!customer_description.Value</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>customer_description</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>4</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox20">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Սեռը</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox20</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="sex">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!sex.Value</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>sex</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox22">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Ծննդյան/հիմնադրման ամսաթիվ</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox22</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>3</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="birth">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!birth.Value</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>birth</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixRowHierarchy>
+            <DataSetName>QuestionnaireCustomerInfoDataSet</DataSetName>
+            <Top>0.89458in</Top>
+            <Height>0.9in</Height>
+            <Width>6.36752in</Width>
+            <ZIndex>2</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <FontFamily>GHEA Grapalat</FontFamily>
+            </Style>
+          </Tablix>
+          <Tablix Name="Tablix2">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn>
+                  <Width>0.96007in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.14757in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.81424in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.90799in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.52257in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>2.01507in</Width>
+                </TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox63">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Ներդրումային ընդհանուր փորձ և նպատակներ</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox62</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#00cc00</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>6</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.1in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox69">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox68</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>6</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.5625in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox75">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Ինչպե՞ս եք գնահատում արժեթղթերի շուկայում ձեր գիտելիքների մակարդակը</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox74</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>4</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox79">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!knowledgeLevel.Value</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox78</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>2</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.76042in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Subreport Name="SubExperienceAndKnowledgeQuestionnaire2">
+                          <ReportName>SubExperienceAndKnowledgeQuestionnaire</ReportName>
+                          <Parameters>
+                            <Parameter Name="contractId">
+                              <Value>=Parameters!contractId.Value</Value>
+                            </Parameter>
+                          </Parameters>
+                          <ZIndex>3</ZIndex>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                        </Subreport>
+                        <ColSpan>6</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.5in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox171">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Նախորդ 1 տարվա ընթացքում արժեթղթերի շուկայում իրականացված  գործարքների թիվը</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox170</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>5</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox184">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!lastYearCarriedOutTransactions.Value</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox182</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox165">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>1 գործարքի միջին ծավալ ՀՀ դրամով </Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox164</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>5</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox185">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!oneTransactionAverageVolume.Value</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox183</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.36458in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox159">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Ինպե՞ս եք գնահատում ռիսկի Ձեր հակվածությունը</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox158</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>5</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox166">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!riskInclination.Value</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox163</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.5625in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox153">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Ներկա պահին որքա՞ն է կազմում Ձեր արժեթղթերի փաթեթի մեծությունը</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox152</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>5</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox160">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!sharesPackageSize.Value</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox157</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.29167in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox147">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Ինչպե՞ս եք գնահատում Ձեր ընդհանուր ֆինանսական վիճակը</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox146</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>5</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox154">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!generalFinancialCondition.Value</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox151</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.55208in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox141">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Ինչ միջակայքում է գտնվում նախորդող հաշվետու տարում Ձեր եկամուտը </Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox140</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>5</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox148">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!previousYearIncome.Value</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox145</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.36458in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox135">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Ձեր ներդրումային հորիզոնը և նպատակները</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox134</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>5</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox142">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!investmentHorizonAndGgoals.Value</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox139</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.98958in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox129">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Արդյոք ունեցե՞լ եք ֆինանսական ոլորտում աշխատանքային փորձ, որտեղ պահանջվել են արժեթղթերում ներդրումների մասին գիտելիքներ: Եթե այո, ապա որքա՞ն է Ձեր աշխատանքային փորձն այդ ոլորտում: </Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox128</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>5</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox136">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!workExperience.Value</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox133</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.5in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox123">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Որքա՞ն է կազմել նախորդ տարվա վերջի դրությամբ կազմակերպության ակտիվների հաշվեկշռային արժեքը </Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox122</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>5</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox130">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!assetsCarryingAmount.Value</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox127</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.5in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox117">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Որքա՞ն է կազմել նախորդ տարվա ընթացքում կազմակերպության  իրացման շրջանառությունը</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox116</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>5</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox124">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!salesTurnover.Value</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox121</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.5in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox111">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Որքա՞ն է կազմել նախորդ տարվա վերջի դրությամբ կազմակերպության ընդհանուր կապիտալը</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox110</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>5</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox118">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!totalCapital.Value</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox115</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.5in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox105">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Հաճախորդի ստորագրություն </Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>և կնիք</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox104</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>3</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox108">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox107</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>3</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox99">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Լրացման ամսաթիվ</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox98</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>3</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox102">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!reportDate.Value</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <Format>MM/dd/yyyy</Format>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Left</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox101</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>3</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixRowHierarchy>
+            <FixedColumnHeaders>true</FixedColumnHeaders>
+            <FixedRowHeaders>true</FixedRowHeaders>
+            <DataSetName>QuestionnaireInfoDataSet</DataSetName>
+            <Top>3.17646in</Top>
+            <Left>0.00002in</Left>
+            <Height>7.79791in</Height>
+            <Width>6.36751in</Width>
+            <ZIndex>3</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <FontFamily>GHEA Grapalat</FontFamily>
+            </Style>
+          </Tablix>
+          <Tablix Name="Tablix12">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn>
+                  <Width>0.96007in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.04299in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.65801in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.68924in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.85631in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>2.1609in</Width>
+                </TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox30">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Քաղաքացիություն/գրանցման երկիր</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox26</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>3</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="passport_country3">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!passport_country.Value</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>passport_country</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>3</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox4">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Գրանցման հասցե</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox2</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>2</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="address3">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!address.Value</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>address</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>4</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox31">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Հեռ.</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox14</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="phone3">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!phone.Value</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>phone</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox41">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Ֆաքս</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox16</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox42">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>----------</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox17</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox43">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Էլ. հասցե</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox18</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="email3">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!email.Value</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>email</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixRowHierarchy>
+            <DataSetName>QuestionnaireCustomerInfoDataSet</DataSetName>
+            <Top>2.29458in</Top>
+            <Height>0.75in</Height>
+            <Width>6.36752in</Width>
+            <ZIndex>4</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <FontFamily>GHEA Grapalat</FontFamily>
+            </Style>
+          </Tablix>
+          <Tablix Name="Tablix32">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn>
+                  <Width>0.94424in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.13174in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.71671in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>2.57483in</Width>
+                </TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow>
+                  <Height>0.5in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox169">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Կրթություն</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox169</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="education">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!education.Value</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>education</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox176">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Մասնագիտություն/
+Գործունեության ոլորտ</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox176</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="profession">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!profession.Value</Value>
+                                  <Style>
+                                    <FontFamily>GHEA Grapalat</FontFamily>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>profession</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember />
+              </TablixMembers>
+            </TablixRowHierarchy>
+            <DataSetName>QuestionnaireInfoDataSet</DataSetName>
+            <Top>1.79458in</Top>
+            <Height>0.5in</Height>
+            <Width>6.36752in</Width>
+            <ZIndex>5</ZIndex>
+            <Style>
+              <Border>
+                <Style>Solid</Style>
+              </Border>
+              <TopBorder>
+                <Style>Solid</Style>
+              </TopBorder>
+              <BottomBorder>
+                <Style>Solid</Style>
+              </BottomBorder>
+              <LeftBorder>
+                <Style>Solid</Style>
+              </LeftBorder>
+              <RightBorder>
+                <Style>Solid</Style>
+              </RightBorder>
+            </Style>
+          </Tablix>
+        </ReportItems>
+        <Height>10.97437in</Height>
+        <Style />
+      </Body>
+      <Width>6.47917in</Width>
+      <Page>
+        <LeftMargin>1in</LeftMargin>
+        <RightMargin>1in</RightMargin>
+        <TopMargin>1in</TopMargin>
+        <BottomMargin>1in</BottomMargin>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <ReportParameters>
+    <ReportParameter Name="customerNumber">
+      <DataType>String</DataType>
+      <Prompt>customerNumber</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="contractId">
+      <DataType>String</DataType>
+      <Prompt>contractId</Prompt>
+    </ReportParameter>
+  </ReportParameters>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>4</NumberOfColumns>
+      <NumberOfRows>7</NumberOfRows>
+      <CellDefinitions>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>customerNumber</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>6</RowIndex>
+          <ParameterName>contractId</ParameterName>
+        </CellDefinition>
+      </CellDefinitions>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
+  <EmbeddedImages>
+    <EmbeddedImage Name="Picture1">
+      <MIMEType>image/jpeg</MIMEType>
+      <ImageData>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</ImageData>
+    </EmbeddedImage>
+    <EmbeddedImage Name="Picture11">
+      <MIMEType>image/jpeg</MIMEType>
+      <ImageData>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</ImageData>
+    </EmbeddedImage>
+  </EmbeddedImages>
+  <rd:ReportUnitType>Inch</rd:ReportUnitType>
+  <rd:ReportID>95c0c7b0-db1c-4af2-ab8f-4b812bd8504a</rd:ReportID>
+</Report>

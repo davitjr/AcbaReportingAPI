@@ -1,0 +1,271 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="AccOperbaseDataSource">
+      <DataSourceReference>AccOperbaseDataSource</DataSourceReference>
+      <rd:SecurityType>None</rd:SecurityType>
+      <rd:DataSourceID>912e177e-5570-4fa0-9a80-f0b687cad91d</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="bank_name">
+      <Query>
+        <DataSourceName>AccOperbaseDataSource</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@filialCode">
+            <Value>=Parameters!filialCode.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>SELECT dbo.fnc_convertAnsiToUnicode(description) as description FROM [tbl_banks;] WHERE code = @filialCode</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="description">
+          <DataField>description</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="sp_cash_daily_flow2">
+      <Query>
+        <DataSourceName>AccOperbaseDataSource</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@filialcode">
+            <Value>=Parameters!filialCode.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@dCalc">
+            <Value>=Parameters!dCalc.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@onlyInkasDepartment">
+            <Value>=Parameters!onlyInkasDepartment.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@only_currency">
+            <Value>1</Value>
+          </QueryParameter>
+          <QueryParameter Name="@currency">
+            <Value>""</Value>
+          </QueryParameter>
+          <QueryParameter Name="@queryType">
+            <Value>2</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandType>StoredProcedure</CommandType>
+        <CommandText>sp_cash_daily_flow</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="currency">
+          <DataField>currency</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="number">
+          <DataField>number</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="pr">
+          <DataField>pr</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="amount">
+          <DataField>amount</DataField>
+          <rd:TypeName>System.Double</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Textbox Name="Textbox7">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=IIf(Parameters!onlyInkasDepartment.Value = 1, "Î³ÝËÇÏ ¹ñ³Ù³ßñç³Ý³éáõÃÛ³Ý µ³ÅÝÇ å»ï", IIf(Parameters!filialCode.Value = 22000, "êå³ë³ñÏÙ³Ý µ³ÅÝÇ å»ï", "¶ÉË³íáñ Ñ³ßí³å³Ñ"))</Value>
+                    <Style>
+                      <FontFamily>arial armenian</FontFamily>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox2</rd:DefaultName>
+            <Top>3.89463cm</Top>
+            <Left>0.23876cm</Left>
+            <Height>0.62585cm</Height>
+            <Width>9.10143cm</Width>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <VerticalAlign>Bottom</VerticalAlign>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Textbox8">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>¸ñ³Ù³ñÏÕÇ í³ñÇã</Value>
+                    <Style>
+                      <FontFamily>arial armenian</FontFamily>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox2</rd:DefaultName>
+            <Top>4.87326cm</Top>
+            <Left>0.23876cm</Left>
+            <Height>0.62585cm</Height>
+            <Width>9.10143cm</Width>
+            <ZIndex>1</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <VerticalAlign>Bottom</VerticalAlign>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Tablix Name="Tablix1">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn>
+                  <Width>17.45651cm</Width>
+                </TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow>
+                  <Height>3.14cm</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Subreport Name="Sub_CashDailyFlow">
+                          <ReportName>Sub_CashDailyFlow</ReportName>
+                          <Parameters>
+                            <Parameter Name="onlyInkasDepartment">
+                              <Value>=Parameters!onlyInkasDepartment.Value</Value>
+                            </Parameter>
+                            <Parameter Name="dCalc">
+                              <Value>=Parameters!dCalc.Value</Value>
+                            </Parameter>
+                            <Parameter Name="filialCode">
+                              <Value>=Parameters!filialCode.Value</Value>
+                            </Parameter>
+                            <Parameter Name="currency">
+                              <Value>=Fields!currency.Value</Value>
+                            </Parameter>
+                          </Parameters>
+                          <Style>
+                            <Border>
+                              <Style>None</Style>
+                            </Border>
+                          </Style>
+                        </Subreport>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy>
+              <TablixMembers>
+                <TablixMember />
+              </TablixMembers>
+            </TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember>
+                  <Group Name="Details">
+                    <PageBreak>
+                      <BreakLocation>Between</BreakLocation>
+                    </PageBreak>
+                  </Group>
+                </TablixMember>
+              </TablixMembers>
+            </TablixRowHierarchy>
+            <DataSetName>sp_cash_daily_flow2</DataSetName>
+            <Top>0.49953cm</Top>
+            <Left>0.23876cm</Left>
+            <Height>3.14cm</Height>
+            <Width>17.45651cm</Width>
+            <ZIndex>2</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Tablix>
+        </ReportItems>
+        <Height>2.23792in</Height>
+        <Style />
+      </Body>
+      <Width>17.96825cm</Width>
+      <Page>
+        <PageHeight>21cm</PageHeight>
+        <PageWidth>29.7cm</PageWidth>
+        <LeftMargin>0.5cm</LeftMargin>
+        <RightMargin>1.3cm</RightMargin>
+        <TopMargin>0.5cm</TopMargin>
+        <BottomMargin>0.3cm</BottomMargin>
+        <ColumnSpacing>0.13cm</ColumnSpacing>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <ReportParameters>
+    <ReportParameter Name="onlyInkasDepartment">
+      <DataType>Integer</DataType>
+      <Prompt>only Inkas Department</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="dCalc">
+      <DataType>DateTime</DataType>
+      <Prompt>d Calc</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="filialCode">
+      <DataType>Integer</DataType>
+      <Prompt>filial Code</Prompt>
+    </ReportParameter>
+  </ReportParameters>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>2</NumberOfColumns>
+      <NumberOfRows>2</NumberOfRows>
+      <CellDefinitions>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>onlyInkasDepartment</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>dCalc</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>1</RowIndex>
+          <ParameterName>filialCode</ParameterName>
+        </CellDefinition>
+      </CellDefinitions>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
+  <rd:ReportUnitType>Cm</rd:ReportUnitType>
+  <rd:ReportID>ccdba14c-6007-45af-bbaf-7ee56c8ead78</rd:ReportID>
+</Report>
